@@ -606,7 +606,7 @@ ul {
     transform: scale(1.1) rotate(5deg);
 }
 
-.cert-card h4 {
+.cert-card h3 {
     font-size: 1.1rem;
     font-weight: 500;
 }
@@ -988,7 +988,7 @@ canvas#pdf-render {
     gap: 0.5rem;
 }
 
-.cert-info h4 {
+.cert-info h3 {
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--text-white);

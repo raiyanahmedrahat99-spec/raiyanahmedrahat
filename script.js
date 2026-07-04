@@ -415,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="cert-card glass-card reveal-up ${delayClass}">
                     <div class="cert-icon"><i class="fas fa-certificate"></i></div>
                     <div class="cert-info">
-                        <h4>${cert.title}</h4>
+                        <h3>${cert.title}</h3>
                         <p>${cert.issuer}</p>
                         <p class="cert-date">${cert.date}</p>
                     </div>
