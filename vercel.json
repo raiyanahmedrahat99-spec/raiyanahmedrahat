@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/public/(.*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/robots.txt"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "/sitemap.xml"
+    },
+    {
+      "src": "/style.css",
+      "dest": "/style.css"
+    },
+    {
+      "src": "/script.js",
+      "dest": "/script.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}

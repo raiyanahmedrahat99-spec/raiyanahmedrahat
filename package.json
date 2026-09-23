@@ -1,0 +1,18 @@
+{
+  "name": "raiyanahmed-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio of Raiyan Ahmed Rahat — Product Architect & Cybersecurity Consultant",
+  "scripts": {
+    "build": "node -e \"console.log('Build completed successfully')\"",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "portfolio",
+    "cybersecurity",
+    "product-architect",
+    "nexuscraft"
+  ],
+  "author": "Raiyan Ahmed Rahat",
+  "license": "MIT"
+}
