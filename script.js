@@ -65,7 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. Typing Animation ---
     const typingText = document.getElementById('typing-text');
-    const words = ["Cybersecurity Enthusiast.", "AI Developer.", "Full Stack Web Developer."];
+    const words = [
+        "Product Architect.",
+        "Cybersecurity Consultant.",
+        "Founder & CEO at NexusCraft.",
+        "AI & Scalable Systems Engineer."
+    ];
     let wordIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
