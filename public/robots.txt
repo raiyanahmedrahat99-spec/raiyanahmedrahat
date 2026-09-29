@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.raiyanahmed.xyz/sitemap.xml
+Sitemap: https://nexuscraaft.com/sitemap.xml
