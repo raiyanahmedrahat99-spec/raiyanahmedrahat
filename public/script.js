@@ -260,29 +260,231 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 9. Form Submission (Netlify) ---
+    // --- Toast Notification System ---
+    function showToast({ title, message, type = 'info', duration = 5000 }) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'toast-container';
+            container.setAttribute('aria-live', 'polite');
+            container.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let iconClass = 'fas fa-info-circle';
+        if (type === 'success') iconClass = 'fas fa-check-circle';
+        else if (type === 'error') iconClass = 'fas fa-exclamation-circle';
+        else if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
+
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="${iconClass}"></i></div>
+            <div class="toast-content">
+                <div class="toast-title">${title || (type.charAt(0).toUpperCase() + type.slice(1))}</div>
+                <div class="toast-message">${message || ''}</div>
+            </div>
+            <button type="button" class="toast-close-btn" aria-label="Close notification"><i class="fas fa-times"></i></button>
+            <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+        `;
+
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.classList.add('toast-show');
+        });
+
+        let dismissTimer = null;
+        const removeToast = () => {
+            if (dismissTimer) clearTimeout(dismissTimer);
+            toast.classList.remove('toast-show');
+            toast.classList.add('toast-hide');
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.parentElement.removeChild(toast);
+                }
+            }, 400);
+        };
+
+        dismissTimer = setTimeout(removeToast, duration);
+
+        const closeBtn = toast.querySelector('.toast-close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', removeToast);
+        }
+    }
+
+    // Expose showToast globally
+    window.showToast = showToast;
+
+    // --- 9. Form Submission & Validation with SMS Gateway API ---
     const contactForm = document.getElementById('contact-form');
     const formSuccessMsg = document.getElementById('form-success');
+    const submitBtn = document.getElementById('contact-submit-btn');
+    const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+    const btnLoading = submitBtn ? submitBtn.querySelector('.btn-loading') : null;
     
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        const nameField = document.getElementById('name');
+        const phoneField = document.getElementById('phone');
+        const emailField = document.getElementById('email');
+        const subjectField = document.getElementById('subject');
+        const messageField = document.getElementById('message');
+
+        // Phone validation helper: removes non-digits (preserving leading +), tests 8-16 digits
+        const validatePhone = (val) => {
+            if (!val) return false;
+            const cleaned = val.toString().replace(/[\s\-\(\)]/g, '');
+            return /^\+?[0-9]{8,16}$/.test(cleaned);
+        };
+
+        const validateEmail = (val) => {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        };
+
+        // Real-time error cleanup on input
+        [nameField, phoneField, emailField, subjectField, messageField].forEach(field => {
+            if (field) {
+                field.addEventListener('input', () => {
+                    field.classList.remove('input-error');
+                });
+            }
+        });
+
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const formData = new FormData(contactForm);
-            
-            fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString(),
-            })
-            .then(() => {
-                formSuccessMsg.style.display = 'block';
-                contactForm.reset();
-                setTimeout(() => {
-                    formSuccessMsg.style.display = 'none';
-                }, 5000);
-            })
-            .catch((error) => alert(error));
+
+            const name = nameField ? nameField.value.trim() : '';
+            const phone = phoneField ? phoneField.value.trim() : '';
+            const email = emailField ? emailField.value.trim() : '';
+            const subject = subjectField ? subjectField.value.trim() : '';
+            const message = messageField ? messageField.value.trim() : '';
+
+            // Client-side Input Validation
+            let hasError = false;
+
+            if (!name || name.length < 2) {
+                if (nameField) nameField.classList.add('input-error');
+                showToast({
+                    type: 'error',
+                    title: 'Invalid Name',
+                    message: 'Please provide your full name.'
+                });
+                hasError = true;
+            }
+
+            if (!validatePhone(phone)) {
+                if (phoneField) phoneField.classList.add('input-error');
+                showToast({
+                    type: 'error',
+                    title: 'Invalid Phone Number',
+                    message: 'Please enter a valid phone number with country code (e.g. +8801XXXXXXXXX).'
+                });
+                hasError = true;
+            }
+
+            if (!validateEmail(email)) {
+                if (emailField) emailField.classList.add('input-error');
+                showToast({
+                    type: 'error',
+                    title: 'Invalid Email',
+                    message: 'Please provide a valid email address.'
+                });
+                hasError = true;
+            }
+
+            if (!subject) {
+                if (subjectField) subjectField.classList.add('input-error');
+                showToast({
+                    type: 'error',
+                    title: 'Subject Required',
+                    message: 'Please specify the subject of your inquiry.'
+                });
+                hasError = true;
+            }
+
+            if (!message) {
+                if (messageField) messageField.classList.add('input-error');
+                showToast({
+                    type: 'error',
+                    title: 'Message Required',
+                    message: 'Please enter your message.'
+                });
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Submit Button Loading State
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                if (btnText) btnText.style.display = 'none';
+                if (btnLoading) btnLoading.style.display = 'inline-flex';
+            }
+
+            const payload = {
+                name,
+                phone,
+                email,
+                subject,
+                message
+            };
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json().catch(() => null);
+
+                if (response.ok && data && data.success) {
+                    // Success UI Feedback
+                    showToast({
+                        type: 'success',
+                        title: 'Inquiry Dispatched!',
+                        message: data.message || 'Thank you! Your note has been received and an SMS confirmation was sent.'
+                    });
+
+                    if (formSuccessMsg) {
+                        formSuccessMsg.style.display = 'block';
+                        setTimeout(() => {
+                            formSuccessMsg.style.display = 'none';
+                        }, 6000);
+                    }
+
+                    contactForm.reset();
+                    [nameField, phoneField, emailField, subjectField, messageField].forEach(field => {
+                        if (field) field.classList.remove('input-error');
+                    });
+                } else {
+                    const errorMessage = (data && data.error) || 'Failed to submit inquiry. Please verify your details and try again.';
+                    showToast({
+                        type: 'error',
+                        title: 'Submission Failed',
+                        message: errorMessage
+                    });
+                }
+            } catch (err) {
+                console.error('Contact form submission error:', err);
+                showToast({
+                    type: 'error',
+                    title: 'Connection Error',
+                    message: 'Unable to reach the server. Please check your network connection and try again.'
+                });
+            } finally {
+                // Restore button state
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    if (btnText) btnText.style.display = 'inline-flex';
+                    if (btnLoading) btnLoading.style.display = 'none';
+                }
+            }
         });
     }
 

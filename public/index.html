@@ -511,22 +511,30 @@
                                 <label>Don't fill this out if you're human: <input name="bot-field"></label>
                             </div>
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" id="name" name="name" placeholder="John Doe" required>
+                                <label for="name">Name <span class="required-star">*</span></label>
+                                <input type="text" id="name" name="name" placeholder="John Doe" required autocomplete="name">
                             </div>
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                                <label for="phone">Phone Number <span class="required-star">*</span></label>
+                                <input type="tel" id="phone" name="phone" placeholder="+880 1XXXXXXXXX" required pattern="^\+?[0-9\s\-\(\)]{8,20}$" title="Please enter a valid phone number (at least 8 digits)" autocomplete="tel">
+                                <span class="field-hint">Include country code for direct SMS notification (e.g. +880...)</span>
                             </div>
                             <div class="form-group">
-                                <label for="subject">Subject</label>
+                                <label for="email">Email <span class="required-star">*</span></label>
+                                <input type="email" id="email" name="email" placeholder="john@example.com" required autocomplete="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject <span class="required-star">*</span></label>
                                 <input type="text" id="subject" name="subject" placeholder="Project Inquiry" required>
                             </div>
                             <div class="form-group">
-                                <label for="message">Message</label>
+                                <label for="message">Message <span class="required-star">*</span></label>
                                 <textarea id="message" name="message" rows="5" placeholder="Your message..." required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary ripple w-100">Send Message <i class="fas fa-paper-plane"></i></button>
+                            <button type="submit" id="contact-submit-btn" class="btn btn-primary ripple w-100">
+                                <span class="btn-text">Send Message <i class="fas fa-paper-plane"></i></span>
+                                <span class="btn-loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Sending Inquiry...</span>
+                            </button>
                             <div id="form-success" class="form-success-msg" style="display: none;">
                                 <i class="fas fa-check-circle"></i> Message sent successfully! I'll get back to you soon.
                             </div>
@@ -550,6 +558,9 @@
     <button id="back-to-top" class="back-to-top glass-card" aria-label="Back to Top">
         <i class="fas fa-arrow-up"></i>
     </button>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <!-- PDF Viewer Modal -->
     <div id="pdf-modal" class="pdf-modal">
