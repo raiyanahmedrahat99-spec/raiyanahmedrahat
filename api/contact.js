@@ -15,7 +15,6 @@ function loadEnv() {
                     if (eqIndex > 0) {
                         const key = trimmed.slice(0, eqIndex).trim();
                         let value = trimmed.slice(eqIndex + 1).trim();
-                        // Remove wrapping quotes if present
                         if ((value.startsWith('"') && value.endsWith('"')) || 
                             (value.startsWith("'") && value.endsWith("'"))) {
                             value = value.slice(1, -1);
@@ -37,10 +36,10 @@ loadEnv();
 // SMS Gateway Configuration
 const SMS_GATEWAY_BASE_URL = process.env.SMS_GATEWAY_BASE_URL || 'https://api.smsgateway.com.bd/api';
 const SMS_GATEWAY_CLIENT_ID = process.env.SMS_GATEWAY_CLIENT_ID || 'client_uXfE0';
-const SMS_GATEWAY_API_KEY = process.env.SMS_GATEWAY_API_KEY || 'chrK2ui9S4flrQ3n2sOi';
+const SMS_GATEWAY_KEY = process.env.SMS_GATEWAY_KEY || process.env.SMS_GATEWAY_API_KEY || 'chrK2ui9S4flrQ3n2sOi';
 
 /**
- * Format and sanitize phone number for SMS Gateway
+ * Format and sanitize recipient phone number for SMS Gateway
  * Cleans spaces, dashes, brackets, and ensures standard number format
  */
 function sanitizePhoneNumber(phone) {
@@ -62,12 +61,12 @@ function isValidPhoneNumber(phone) {
 /**
  * Sends SMS via SMSGateway.BD API
  */
-async function sendSmsGatewayMessage(receiver, message) {
+async function sendSmsGatewayMessage(recipient, message) {
     const url = `${SMS_GATEWAY_BASE_URL.replace(/\/$/, '')}/send-message`;
     const payload = JSON.stringify({
         client_id: SMS_GATEWAY_CLIENT_ID,
-        api_key: SMS_GATEWAY_API_KEY,
-        receiver: receiver,
+        key: SMS_GATEWAY_KEY,
+        recipient: recipient,
         message: message
     });
 
@@ -81,6 +80,8 @@ async function sendSmsGatewayMessage(receiver, message) {
             },
             body: payload
         });
+
+        console.log('SMS API Status:', response.status);
 
         const data = await response.json().catch(() => null);
         if (!response.ok) {
@@ -104,6 +105,7 @@ async function sendSmsGatewayMessage(receiver, message) {
         };
 
         const req = https.request(options, (res) => {
+            console.log('SMS API Status:', res.statusCode);
             let body = '';
             res.on('data', (chunk) => body += chunk);
             res.on('end', () => {
@@ -228,7 +230,7 @@ module.exports = async function handler(req, res) {
             return;
         }
 
-        const sanitizedReceiver = sanitizePhoneNumber(phone);
+        const sanitizedRecipient = sanitizePhoneNumber(phone);
         const contactName = name.trim();
 
         // Construct exact required SMS message
@@ -239,7 +241,7 @@ module.exports = async function handler(req, res) {
         let smsError = null;
 
         try {
-            gatewayResult = await sendSmsGatewayMessage(sanitizedReceiver, smsMessage);
+            gatewayResult = await sendSmsGatewayMessage(sanitizedRecipient, smsMessage);
         } catch (err) {
             console.error('SMS Gateway dispatch error:', err.message);
             smsError = err.message;
