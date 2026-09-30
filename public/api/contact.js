@@ -39,14 +39,21 @@ const SMS_GATEWAY_CLIENT_ID = process.env.SMS_GATEWAY_CLIENT_ID || 'client_uXfE0
 const SMS_GATEWAY_KEY = process.env.SMS_GATEWAY_KEY || process.env.SMS_GATEWAY_API_KEY || 'chrK2ui9S4flrQ3n2sOi';
 
 /**
- * Format and sanitize recipient phone number for SMS Gateway
- * Cleans spaces, dashes, brackets, and ensures standard number format
+ * Format and strictly sanitize recipient phone number for SMS Gateway.
+ * Converts strings like "+88016..." or "88016..." into standard local format "016...".
  */
 function sanitizePhoneNumber(phone) {
     if (!phone) return '';
-    // Strip whitespace, hyphens, parentheses
-    let cleaned = phone.toString().replace(/[\s\-\(\)]/g, '');
-    return cleaned;
+    // Strip all non-digit characters
+    let digits = phone.toString().replace(/[^0-9]/g, '');
+
+    // Convert +88016... or 88016... to 016...
+    if (digits.startsWith('880')) {
+        digits = digits.slice(2);
+    } else if (digits.length === 10 && digits.startsWith('1')) {
+        digits = '0' + digits;
+    }
+    return digits;
 }
 
 /**
@@ -54,8 +61,8 @@ function sanitizePhoneNumber(phone) {
  */
 function isValidPhoneNumber(phone) {
     const cleaned = sanitizePhoneNumber(phone);
-    // Should be between 8 and 16 digits, with optional leading '+'
-    return /^\+?[0-9]{8,16}$/.test(cleaned);
+    // Standard Bangladeshi mobile number format (11 digits starting with 013-019) or standard 8-16 digits
+    return /^01[3-9][0-9]{8}$/.test(cleaned) || /^[0-9]{8,15}$/.test(cleaned);
 }
 
 /**
@@ -72,7 +79,7 @@ async function sendSmsGatewayMessage(recipient, message) {
 
     // Check if global fetch is available (Node 18+)
     if (typeof fetch === 'function') {
-        const response = await fetch(url, {
+        const res = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,16 +88,17 @@ async function sendSmsGatewayMessage(recipient, message) {
             body: payload
         });
 
-        console.log('SMS API Status:', response.status);
+        const data = await res.json().catch(() => null);
+        console.log("=== SMS GATEWAY RESPONSE ===", data);
 
-        const data = await response.json().catch(() => null);
-        if (!response.ok) {
-            throw new Error((data && (data.message || data.error)) || `Gateway HTTP error ${response.status}`);
+        if (!res.ok || (data && data.response_code && data.response_code !== 200)) {
+            const errMsg = (data && (data.message || data.error)) || `Gateway error with code ${data ? data.response_code : res.status}`;
+            throw new Error(errMsg);
         }
         return data;
     }
 
-    // Fallback to native https module for Node environments without fetch
+    // Fallback to native https module for Node environments without global fetch
     return new Promise((resolve, reject) => {
         const parsedUrl = new URL(url);
         const options = {
@@ -105,18 +113,19 @@ async function sendSmsGatewayMessage(recipient, message) {
         };
 
         const req = https.request(options, (res) => {
-            console.log('SMS API Status:', res.statusCode);
             let body = '';
             res.on('data', (chunk) => body += chunk);
             res.on('end', () => {
                 try {
-                    const parsed = body ? JSON.parse(body) : {};
-                    if (res.statusCode >= 200 && res.statusCode < 300) {
-                        resolve(parsed);
+                    const data = body ? JSON.parse(body) : {};
+                    console.log("=== SMS GATEWAY RESPONSE ===", data);
+                    if (res.statusCode >= 200 && res.statusCode < 300 && (!data.response_code || data.response_code === 200)) {
+                        resolve(data);
                     } else {
-                        reject(new Error(parsed.message || parsed.error || `Gateway returned status ${res.statusCode}`));
+                        reject(new Error(data.message || data.error || `Gateway returned status ${res.statusCode}`));
                     }
                 } catch (err) {
+                    console.log("=== SMS GATEWAY RESPONSE ===", body);
                     if (res.statusCode >= 200 && res.statusCode < 300) {
                         resolve({ raw: body });
                     } else {
@@ -168,12 +177,10 @@ module.exports = async function handler(req, res) {
             try {
                 body = JSON.parse(body);
             } catch (e) {
-                // Check if it is urlencoded
                 const urlParams = new URLSearchParams(body);
                 body = Object.fromEntries(urlParams.entries());
             }
         } else if (!body) {
-            // Read stream if body not already parsed by framework
             body = await new Promise((resolve, reject) => {
                 let data = '';
                 req.on('data', chunk => data += chunk);
@@ -204,7 +211,7 @@ module.exports = async function handler(req, res) {
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ 
                 success: false, 
-                error: 'Valid Phone Number is required (e.g. +8801XXXXXXXXX or local format).' 
+                error: 'Valid Phone Number is required (e.g. +8801XXXXXXXXX or 01XXXXXXXXX).' 
             }));
             return;
         }
