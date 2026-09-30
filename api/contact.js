@@ -240,8 +240,8 @@ module.exports = async function handler(req, res) {
         const sanitizedRecipient = sanitizePhoneNumber(phone);
         const contactName = name.trim();
 
-        // Construct exact required SMS message
-        const smsMessage = `Dear ${contactName}, thank you for your inquiry. I appreciate you taking the time to connect. My office is reviewing your note. Feel free to join a quick sync: https://meet.google.com/cdc-kqjv-zur or reach out at +88016223697899 (Direct) / +8809697732099 (Office: 10 AM-6 PM).`;
+        // Construct exact required SMS message with executive portfolio domain
+        const smsMessage = `Dear ${contactName}, thank you for your inquiry. I appreciate you taking the time to connect. My office is reviewing your note. Feel free to join a quick sync: https://meet.google.com/cdc-kqjv-zur or reach out at +88016223697899 (Direct) / +8809697732099 (Office: 10 AM-6 PM). Visit: https://raiyanahmed.xyz`;
 
         // Send SMS through SMS Gateway
         let gatewayResult = null;
