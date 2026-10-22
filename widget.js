@@ -1,7 +1,7 @@
 /**
  * ======================================================================
  * NEXA: C-SUITE EXECUTIVE AI AGENT & EMBEDDABLE FLOATING CHAT WIDGET
- * Enterprise Architecture: Desktop & Mobile Responsive with Visual Viewport Keyboard Adaptation
+ * Enterprise Architecture: Desktop Floating & 100% Full-Width Mobile Viewport
  * ======================================================================
  */
 
@@ -174,7 +174,7 @@
       return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Stylesheet Injection
+    // Inject Stylesheet
     const styleId = 'nexa-widget-stylesheet';
     let style = document.getElementById(styleId);
     if (!style) {
@@ -196,15 +196,14 @@
         -webkit-font-smoothing: antialiased;
       }
 
+      /* Root container is static so fixed children are positioned relative to viewport */
       .nexa-floating-root {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
+        position: static !important;
         z-index: 9999999;
         pointer-events: none;
       }
 
-      /* 1. FLOATING BADGE ENTRY ANIMATION */
+      /* 1. FLOATING BADGE BUTTON */
       @keyframes nexa-badge-slide-in {
         0% {
           opacity: 0;
@@ -221,31 +220,31 @@
       }
 
       .nexa-badge-btn {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: #0f121d;
-        border: 1px solid rgba(56, 189, 248, 0.35);
-        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(14, 165, 233, 0.25);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        pointer-events: auto;
+        position: fixed !important;
+        bottom: 24px !important;
+        right: 24px !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+        background: #0f121d !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(14, 165, 233, 0.25) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        pointer-events: auto !important;
         opacity: 0;
         animation: nexa-badge-slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         animation-delay: 0.15s;
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-        z-index: 9999999;
-        touch-action: manipulation;
+        z-index: 9999999 !important;
+        touch-action: manipulation !important;
       }
 
       .nexa-badge-btn:hover {
         transform: translateY(-3px) scale(1.06);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 32px rgba(14, 165, 233, 0.45);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 32px rgba(14, 165, 233, 0.45) !important;
       }
 
       .nexa-pulse-ring {
@@ -288,26 +287,26 @@
 
       /* PREVIEW TOOLTIP / TEASER PILL */
       .nexa-teaser-pill {
-        position: fixed;
-        bottom: 96px;
-        right: 24px;
-        max-width: 320px;
-        background: rgba(15, 18, 29, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(56, 189, 248, 0.35);
-        border-radius: 9999px;
-        padding: 10px 16px;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        pointer-events: auto;
+        position: fixed !important;
+        bottom: 96px !important;
+        right: 24px !important;
+        max-width: 320px !important;
+        background: rgba(15, 18, 29, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        border-radius: 9999px !important;
+        padding: 10px 16px !important;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        cursor: pointer !important;
+        pointer-events: auto !important;
         opacity: 0;
         transform: translateX(20px) scale(0.95);
-        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 9999998;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 9999998 !important;
       }
 
       .nexa-teaser-pill.visible {
@@ -348,39 +347,98 @@
         background: rgba(255, 255, 255, 0.15);
       }
 
-      /* 2. DESKTOP CHAT MODAL */
-      .nexa-modal,
-      .nexa-chat-modal {
-        position: fixed;
-        bottom: 96px;
-        right: 24px;
-        width: 380px;
-        max-width: calc(100vw - 32px);
-        height: 580px;
-        max-height: calc(100vh - 120px);
-        background: #0d0f18;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(14, 165, 233, 0.15);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        opacity: 0;
-        transform: scale(0.9) translateY(16px);
-        transform-origin: bottom right;
-        pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 9999999;
+      /* 2. DESKTOP CHAT MODAL (Screens > 768px) */
+      @media (min-width: 769px) {
+        .nexa-modal,
+        .nexa-chat-modal {
+          position: fixed !important;
+          bottom: 96px !important;
+          right: 24px !important;
+          left: auto !important;
+          top: auto !important;
+          width: 390px !important;
+          max-width: calc(100vw - 32px) !important;
+          height: 600px !important;
+          max-height: calc(100vh - 120px) !important;
+          background: #0d0f18 !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 20px !important;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(14, 165, 233, 0.15) !important;
+          display: flex !important;
+          flex-direction: column !important;
+          overflow: hidden !important;
+          opacity: 0;
+          transform: scale(0.9) translateY(16px);
+          transform-origin: bottom right;
+          pointer-events: none;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+          z-index: 9999999 !important;
+        }
+
+        .nexa-modal.open,
+        .nexa-chat-modal.open {
+          opacity: 1 !important;
+          transform: scale(1) translateY(0) !important;
+          pointer-events: auto !important;
+        }
       }
 
-      .nexa-modal.open,
-      .nexa-chat-modal.open {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        pointer-events: auto;
+      /* 3. STRICT FULL-WIDTH & FULL-SCREEN MOBILE ARCHITECTURE (Screens <= 768px) */
+      @media (max-width: 768px) {
+        .nexa-badge-btn {
+          bottom: 16px !important;
+          right: 16px !important;
+        }
+
+        .nexa-teaser-pill {
+          bottom: 86px !important;
+          right: 16px !important;
+          left: 16px !important;
+          max-width: calc(100vw - 32px) !important;
+        }
+
+        .nexa-modal,
+        .nexa-chat-modal {
+          display: none !important;
+          pointer-events: none !important;
+        }
+
+        .nexa-modal.open,
+        .nexa-chat-modal.open {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100% !important;
+          min-width: 100% !important;
+          max-width: 100% !important;
+          height: 100dvh !important;
+          min-height: 100dvh !important;
+          max-height: 100dvh !important;
+          max-height: -webkit-fill-available !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border-radius: 0 !important;
+          border: none !important;
+          box-shadow: none !important;
+          z-index: 99999999 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          background: #090a0f !important;
+          opacity: 1 !important;
+          transform: none !important;
+          pointer-events: auto !important;
+          overflow: hidden !important;
+        }
+
+        .nexa-footer,
+        .nexa-input-container {
+          padding-bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
+        }
       }
 
-      /* 3. HEADER CONTAINER: flex-shrink: 0; height: 60px; */
+      /* 4. HEADER CONTAINER: flex-shrink: 0; height: 60px; */
       .nexa-header {
         flex-shrink: 0 !important;
         height: 60px !important;
@@ -392,6 +450,7 @@
         background: #10121c !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
         z-index: 100 !important;
+        width: 100% !important;
       }
 
       .nexa-header-left {
@@ -519,7 +578,7 @@
         color: #ffffff;
       }
 
-      /* 4. MESSAGES STREAM CONTAINER: flex: 1 1 auto; overflow-y: auto; */
+      /* 5. MESSAGES STREAM CONTAINER: flex: 1 1 auto; overflow-y: auto; */
       .nexa-feed {
         flex: 1 1 auto !important;
         overflow-y: auto !important;
@@ -529,6 +588,7 @@
         flex-direction: column;
         gap: 12px;
         scroll-behavior: smooth;
+        width: 100% !important;
       }
 
       .nexa-feed::-webkit-scrollbar {
@@ -694,6 +754,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        width: 100%;
       }
 
       .nexa-form-header {
@@ -764,6 +825,7 @@
         gap: 8px;
         margin-top: 4px;
         touch-action: manipulation;
+        width: 100%;
       }
 
       .nexa-submit-btn:disabled {
@@ -801,7 +863,7 @@
         font-size: 11.5px;
       }
 
-      /* 5. INPUT BAR CONTAINER - PINNED STICKY TO BOTTOM */
+      /* 6. INPUT BAR CONTAINER - PINNED STICKY TO BOTTOM */
       .nexa-footer,
       .nexa-input-container {
         flex-shrink: 0 !important;
@@ -880,57 +942,6 @@
         text-align: center;
         color: #64748b;
         letter-spacing: 0.4px;
-      }
-
-      /* 6. ABSOLUTE MOBILE MODAL ARCHITECTURE (Viewport <= 768px) */
-      @media (max-width: 768px) {
-        .nexa-floating-root {
-          bottom: 16px;
-          right: 16px;
-        }
-
-        .nexa-badge-btn {
-          bottom: 16px;
-          right: 16px;
-        }
-
-        .nexa-teaser-pill {
-          bottom: 86px;
-          right: 16px;
-          left: 16px;
-          max-width: calc(100vw - 32px);
-        }
-
-        .nexa-modal,
-        .nexa-chat-modal {
-          display: none !important;
-          pointer-events: none !important;
-        }
-
-        .nexa-modal.open,
-        .nexa-chat-modal.open {
-          position: fixed !important;
-          inset: 0 !important;
-          width: 100vw !important;
-          height: 100dvh !important;
-          max-height: -webkit-fill-available !important;
-          z-index: 99999999 !important;
-          display: flex !important;
-          flex-direction: column !important;
-          background: #090a0f !important;
-          margin: 0 !important;
-          border-radius: 0 !important;
-          border: none !important;
-          box-shadow: none !important;
-          opacity: 1 !important;
-          transform: none !important;
-          pointer-events: auto !important;
-        }
-
-        .nexa-footer,
-        .nexa-input-container {
-          padding-bottom: max(12px, env(safe-area-inset-bottom, 12px)) !important;
-        }
       }
     `;
 
@@ -1036,17 +1047,27 @@
       }
     }
 
-    // 2. REAL-TIME VIRTUAL VIEWPORT KEYBOARD FIX
+    // REAL-TIME VIRTUAL VIEWPORT KEYBOARD FIX
     const handleResize = () => {
-      const modal = document.querySelector('.nexa-chat-modal');
-      if (modal && window.innerWidth <= 768 && window.visualViewport) {
-        const vh = window.visualViewport.height;
-        modal.style.height = `${vh}px`;
-        modal.style.setProperty('height', `${vh}px`, 'important');
-        modal.style.setProperty('max-height', `${vh}px`, 'important');
-        modal.style.setProperty('bottom', 'auto', 'important');
-        if (typeof window.visualViewport.offsetTop === 'number') {
-          modal.style.setProperty('top', `${window.visualViewport.offsetTop}px`, 'important');
+      const modal = document.getElementById('nexa-chat-modal');
+      if (modal && window.innerWidth <= 768) {
+        if (window.visualViewport) {
+          const vh = window.visualViewport.height;
+          const vt = window.visualViewport.offsetTop || 0;
+          modal.style.setProperty('height', `${vh}px`, 'important');
+          modal.style.setProperty('max-height', `${vh}px`, 'important');
+          modal.style.setProperty('top', `${vt}px`, 'important');
+          modal.style.setProperty('bottom', 'auto', 'important');
+          modal.style.setProperty('left', '0px', 'important');
+          modal.style.setProperty('right', '0px', 'important');
+          modal.style.setProperty('width', '100%', 'important');
+          modal.style.setProperty('min-width', '100%', 'important');
+          modal.style.setProperty('max-width', '100%', 'important');
+        } else {
+          modal.style.setProperty('height', '100dvh', 'important');
+          modal.style.setProperty('width', '100%', 'important');
+          modal.style.setProperty('left', '0px', 'important');
+          modal.style.setProperty('right', '0px', 'important');
         }
         window.scrollTo(0, 0);
         scrollToBottom();
@@ -1132,7 +1153,7 @@
         chatModal.classList.add('open');
         playExecutiveChime();
 
-        if (window.visualViewport && window.innerWidth <= 768) {
+        if (window.innerWidth <= 768) {
           handleResize();
         }
 
@@ -1148,6 +1169,11 @@
         chatModal.style.removeProperty('max-height');
         chatModal.style.removeProperty('top');
         chatModal.style.removeProperty('bottom');
+        chatModal.style.removeProperty('left');
+        chatModal.style.removeProperty('right');
+        chatModal.style.removeProperty('width');
+        chatModal.style.removeProperty('min-width');
+        chatModal.style.removeProperty('max-width');
       }
     }
 
