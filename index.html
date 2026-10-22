@@ -68,12 +68,12 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- NEXA AI Executive Assistant Widget -->
-    <script src="https://nexa-nine-tau.vercel.app/widget.js" defer></script>
+    <script src="widget.js" defer></script>
     <script>
         // Offline / Network Fallback Safeguard for NEXA AI
         window.addEventListener('error', function (e) {
-            if (e.target && e.target.src && e.target.src.includes('nexa-nine-tau.vercel.app/widget.js')) {
-                console.warn('[NEXA Widget] Primary CDN unreachable, initializing local fallback bundle...');
+            if (e.target && e.target.src && e.target.src.includes('widget.js') && !e.target.src.includes('assets/js/widget.js')) {
+                console.warn('[NEXA Widget] Loading local fallback bundle...');
                 var fallbackScript = document.createElement('script');
                 fallbackScript.src = 'assets/js/widget.js';
                 fallbackScript.defer = true;

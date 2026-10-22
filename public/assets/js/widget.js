@@ -1,7 +1,7 @@
 /**
  * ======================================================================
  * NEXA: C-SUITE EXECUTIVE AI AGENT & EMBEDDABLE FLOATING CHAT WIDGET
- * Enterprise Architecture: Desktop & Mobile Modes with Visual Viewport Keyboard Adaptation
+ * Enterprise Architecture: Desktop & Mobile Responsive with Visual Viewport Keyboard Adaptation
  * ======================================================================
  */
 
@@ -48,7 +48,7 @@
     let previousBodyOverflow = '';
     let previousHtmlOverflow = '';
 
-    // Web Audio Chime
+    // Crystalline Dual-Tone Web Audio Chime
     function playExecutiveChime() {
       try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -174,7 +174,7 @@
       return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Inject Stylesheet
+    // Stylesheet Injection
     const styleId = 'nexa-widget-stylesheet';
     let style = document.getElementById(styleId);
     if (!style) {
