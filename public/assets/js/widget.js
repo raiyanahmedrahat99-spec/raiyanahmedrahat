@@ -23,18 +23,8 @@
       return scripts[scripts.length - 1];
     })();
 
-    let apiBase = window.NEXA_API_URL || '';
-    if (!apiBase && currentScript && currentScript.src) {
-      try {
-        const parsedUrl = new URL(currentScript.src);
-        apiBase = parsedUrl.origin;
-      } catch (e) {
-        apiBase = 'https://nexa-nine-tau.vercel.app';
-      }
-    }
-    if (!apiBase) {
-      apiBase = 'https://nexa-nine-tau.vercel.app';
-    }
+    // Executive AI Backend API Base URL (Supports custom override or live endpoint)
+    let apiBase = window.NEXA_API_URL || 'https://nexa-nine-tau.vercel.app';
 
     const STORAGE_KEY = 'nexa_chat_history';
 
