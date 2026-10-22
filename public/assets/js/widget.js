@@ -1,7 +1,7 @@
 /**
  * ======================================================================
  * NEXA: C-SUITE EXECUTIVE AI AGENT & EMBEDDABLE FLOATING CHAT WIDGET
- * Enterprise Mobile Modal Architecture & Visual Viewport Keyboard Adaptation
+ * Enterprise Architecture: Desktop & Mobile Modes with Visual Viewport Keyboard Adaptation
  * ======================================================================
  */
 
@@ -12,7 +12,7 @@
   window.__NEXA_WIDGET_LOADED__ = true;
 
   function initWidget() {
-    // Resolve API Base URL automatically from script origin or fallback to live endpoint
+    // Resolve API Base URL automatically
     const currentScript = document.currentScript || (function () {
       const scripts = document.getElementsByTagName('script');
       for (let i = scripts.length - 1; i >= 0; i--) {
@@ -48,7 +48,7 @@
     let previousBodyOverflow = '';
     let previousHtmlOverflow = '';
 
-    // Web Audio Chime (Crystalline dual-tone notification)
+    // Web Audio Chime
     function playExecutiveChime() {
       try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -174,7 +174,7 @@
       return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Dynamic Style Injection
+    // Inject Stylesheet
     const styleId = 'nexa-widget-stylesheet';
     let style = document.getElementById(styleId);
     if (!style) {
@@ -186,7 +186,7 @@
     style.textContent = `
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-      /* Namespace Isolation */
+      /* Isolated Namespace */
       .nexa-floating-root,
       .nexa-floating-root * {
         box-sizing: border-box;
@@ -208,7 +208,7 @@
       @keyframes nexa-badge-slide-in {
         0% {
           opacity: 0;
-          transform: translateY(28px) scale(0.7);
+          transform: translateY(24px) scale(0.7);
         }
         70% {
           opacity: 1;
@@ -380,7 +380,7 @@
         pointer-events: auto;
       }
 
-      /* 3. HEADER CONTAINER */
+      /* 3. HEADER CONTAINER: flex-shrink: 0; height: 60px; */
       .nexa-header {
         flex-shrink: 0 !important;
         height: 60px !important;
@@ -519,7 +519,7 @@
         color: #ffffff;
       }
 
-      /* 4. MESSAGE STREAM CONTAINER */
+      /* 4. MESSAGES STREAM CONTAINER: flex: 1 1 auto; overflow-y: auto; */
       .nexa-feed {
         flex: 1 1 auto !important;
         overflow-y: auto !important;
@@ -801,7 +801,7 @@
         font-size: 11.5px;
       }
 
-      /* 5. STICKY INPUT BAR CONTAINER - PINNED TO BOTTOM */
+      /* 5. INPUT BAR CONTAINER - PINNED STICKY TO BOTTOM */
       .nexa-footer,
       .nexa-input-container {
         flex-shrink: 0 !important;
@@ -826,7 +826,7 @@
         width: 100%;
       }
 
-      /* Input Text Area: Strict 16px font-size to prevent iOS Safari auto-zoom */
+      /* Strict 16px font-size to prevent iOS Safari auto-zoom */
       .nexa-chat-input {
         flex: 1;
         background: rgba(255, 255, 255, 0.06);
@@ -910,19 +910,16 @@
         .nexa-modal.open,
         .nexa-chat-modal.open {
           position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          bottom: 0 !important;
+          inset: 0 !important;
           width: 100vw !important;
-          height: 100dvh !important; /* Modern Dynamic Viewport */
+          height: 100dvh !important;
           max-height: -webkit-fill-available !important;
-          margin: 0 !important;
-          border-radius: 0 !important;
           z-index: 99999999 !important;
           display: flex !important;
           flex-direction: column !important;
           background: #090a0f !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
           border: none !important;
           box-shadow: none !important;
           opacity: 1 !important;
@@ -999,13 +996,13 @@
           </div>
         </div>
 
-        <!-- Message Stream: flex: 1 1 auto; overflow-y: auto; -->
+        <!-- Messages Stream: flex: 1 1 auto; overflow-y: auto; -->
         <div class="nexa-feed" id="nexa-feed"></div>
 
         <!-- Input Bar Container: PINNED TO BOTTOM -->
         <div class="nexa-footer nexa-input-container" id="nexa-input-container">
           <div class="nexa-input-row">
-            <input type="text" class="nexa-chat-input" id="nexa-chat-input" placeholder="Message Raiyan's executive office..." autocomplete="off" />
+            <input type="text" class="nexa-chat-input" id="nexa-chat-input" placeholder="Message Raiyan's executive office..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="send" />
             <button class="nexa-send-icon-btn" id="nexa-send-icon-btn" aria-label="Send Message">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -1039,12 +1036,18 @@
       }
     }
 
-    // MANDATORY VISUALVIEWPORT KEYBOARD ADAPTATION (JS)
+    // 2. REAL-TIME VIRTUAL VIEWPORT KEYBOARD FIX
     const handleResize = () => {
       const modal = document.querySelector('.nexa-chat-modal');
       if (modal && window.innerWidth <= 768 && window.visualViewport) {
-        modal.style.height = `${window.visualViewport.height}px`;
-        modal.style.setProperty('height', `${window.visualViewport.height}px`, 'important');
+        const vh = window.visualViewport.height;
+        modal.style.height = `${vh}px`;
+        modal.style.setProperty('height', `${vh}px`, 'important');
+        modal.style.setProperty('max-height', `${vh}px`, 'important');
+        modal.style.setProperty('bottom', 'auto', 'important');
+        if (typeof window.visualViewport.offsetTop === 'number') {
+          modal.style.setProperty('top', `${window.visualViewport.offsetTop}px`, 'important');
+        }
         window.scrollTo(0, 0);
         scrollToBottom();
       }
@@ -1054,13 +1057,15 @@
       window.visualViewport.addEventListener('resize', handleResize);
       window.visualViewport.addEventListener('scroll', handleResize);
     }
+    window.addEventListener('resize', handleResize);
 
-    // Keep input visible on focus
+    // Keep input visible when focused on soft keyboards
     chatInput.addEventListener('focus', () => {
       if (window.innerWidth <= 768) {
         setTimeout(handleResize, 50);
         setTimeout(handleResize, 150);
         setTimeout(handleResize, 300);
+        setTimeout(handleResize, 500);
       }
     });
 
@@ -1070,7 +1075,7 @@
       }
     });
 
-    // Teaser Logic
+    // Teaser Tooltip Logic
     function showTeaser() {
       if (teaserDismissed || isOpen) return;
       if (teaserPill) {
@@ -1109,7 +1114,7 @@
       });
     }
 
-    // Toggle Modal & Background Scroll Locking
+    // Modal Toggle & Background Scroll Locking
     function toggleModal(state) {
       const nextState = typeof state === 'boolean' ? state : !isOpen;
       if (nextState === isOpen) return;
@@ -1139,8 +1144,10 @@
         document.body.style.overflow = previousBodyOverflow || '';
         document.documentElement.style.overflow = previousHtmlOverflow || '';
         chatModal.classList.remove('open');
-        chatModal.style.height = '';
         chatModal.style.removeProperty('height');
+        chatModal.style.removeProperty('max-height');
+        chatModal.style.removeProperty('top');
+        chatModal.style.removeProperty('bottom');
       }
     }
 
@@ -1165,7 +1172,7 @@
       });
     }
 
-    // Chat History Management
+    // Conversation History Management
     function initHistory() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -1379,6 +1386,7 @@
       }
     });
 
+    // In-Chat Lead Briefing Form
     function createLeadForm(msgRef) {
       const form = document.createElement('form');
       form.className = 'nexa-lead-form';
